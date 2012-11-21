@@ -1,0 +1,41 @@
+#!/bin/sh
+# Author: Chris Roberts (<chris@hw-ops.com>)
+#
+# chkconfig: 345 99 1
+# Description: Redis node manager
+# Provides: redis_node_manager
+# Default-Start: 3 4 5
+# Default-Stop: 0 1 2 6
+
+START_SCRIPT="<%= "#{
+  File.join(node[:redis_failover][:ruby_bin_dir], 'redis_node_manager')
+} -- -c /etc/redis_failover/config.yml" %>"
+USER_SCRIPT=<%= node[:redis_failover][:process_owner] %>
+
+<% if @el -%>
+source /etc/rc.d/init.d/functions
+<% end -%>
+
+[ -x <%= File.join(node[:redis_failover][:ruby_bin_dir], 'redis_node_manager') %> ] || exit 1
+
+case "$1" in
+  start)
+    echo "Starting redis node manager"
+    <% if @el -%>
+    daemon --user $USER_SCRIPT $START_SCRIPT
+    <% else -%>
+    start-stop-daemon --start --background --quiet --chuid $USER_SCRIPT --user $USER_SCRIPT --exec $START_SCRIPT
+    <% end -%>
+    ;;
+  stop)
+    echo "Stopping redis node manager"
+    pkill -u $USER_SCRIPT -f redis_node_manager
+    ;;
+  status)
+    pkill -0 -u $USER_SCRIPT -f redis_node_manager
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|status}"
+    exit 1
+    ;;
+esac

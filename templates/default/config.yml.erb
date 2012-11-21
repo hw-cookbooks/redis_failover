@@ -1,0 +1,2 @@
+# Configuration for redis_failover dropped off by Chef!
+<%= YAML.dump(ChefRedisFailover.symbolized_hash(node[:redis_failover][:config].to_hash)) %>
