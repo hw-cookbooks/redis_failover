@@ -2,7 +2,7 @@
 # zookeeperd cookbook, optionally restricting to current env.
 
 zk_search = 'zk_id:*'
-if(node[:redis_failover][:zk_discovery][:common_environment])
+if node['redis_failover']['zk_discovery']['common_environment']
   zk_search << " AND chef_environment:#{node.chef_environment}"
 end
 
@@ -11,4 +11,4 @@ zk_node_info = zk_nodes.map do |zk_node|
   "#{zk_node[:ipaddress]}:#{zk_node[:zookeeperd][:config][:client_port]}"
 end
 
-node.default[:redis_failover][:config][:zkservers] = zk_node_info
+node.default['redis_failover']['config'][:zkservers] = zk_node_info
