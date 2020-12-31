@@ -5,4 +5,3 @@ default[:redis_failover][:config][:required_node_managers] = 2
 default[:redis_failover][:config][:password] = nil
 default[:redis_failover][:config][:nodes] = []
 default[:redis_failover][:config][:zkservers] = []
-
